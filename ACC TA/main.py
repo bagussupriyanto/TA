@@ -50,9 +50,9 @@ class AESalgo:
                 return False
 
             expanded_key = expandKey(self._key)
-            aes_cipher_256 = AESCipher(expanded_key)
-            aes_cbc_256 = CBCMode(aes_cipher_256)
-            aes_cbc_256.set_iv(self._iv)
+            aes_cipher_128 = AESCipher(expanded_key)
+            aes_cbc_128 = CBCMode(aes_cipher_128)
+            aes_cbc_128.set_iv(self._iv)
 
             filesize = struct.unpack('!L',in_file.read(4))[0]
 
@@ -63,7 +63,7 @@ class AESalgo:
                         self._salt = None
                         return True
                     else:
-                        out_data = aes_cbc_256.decrypt_block(bytearray(in_data))
+                        out_data = aes_cbc_128.decrypt_block(bytearray(in_data))
                         out_file.write(fix_bytes(
                             out_data[:filesize - out_file.tell()] if filesize - out_file.tell() < 16
                             else fix_bytes(out_data)))
@@ -79,9 +79,9 @@ class AESalgo:
             return False
 
         expanded_key = expandKey(self._key)
-        aes_cipher_256 = AESCipher(expanded_key)
-        aes_cbc_256 = CBCMode(aes_cipher_256)
-        aes_cbc_256.set_iv(self._iv)
+        aes_cipher_128 = AESCipher(expanded_key)
+        aes_cbc_128 = CBCMode(aes_cipher_128)
+        aes_cbc_128.set_iv(self._iv)
 
         try:
             filesize = os.stat(in_file_path)[6]
@@ -102,5 +102,5 @@ class AESalgo:
                         return True
                     else:
                         while len(in_data) < 16:in_data.append(0)
-                        out_data = aes_cbc_256.encrypt_block(in_data)
+                        out_data = aes_cbc_128.encrypt_block(in_data)
                         out_file.write(fix_bytes(out_data))
